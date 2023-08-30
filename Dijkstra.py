@@ -1,3 +1,5 @@
+import json
+
 class Graph:
     def __init__(self):
         self.nodes = set()
@@ -62,6 +64,43 @@ class Dijkstra():
         
         return graph
     
+    def create_message(self, source_node, destination_node, message):
+        shortest_path = destination_node.shortest_path
+        hop_count = len(shortest_path) - 1
+        headers = {
+            "from": source_node.name,
+            "to": destination_node.name,
+            "hop_count": hop_count
+        }
+        payload = message
+
+        message_data = {
+            "type": "info",
+            "headers": headers,
+            "payload": payload
+        }
+        
+        return json.dumps(message_data, indent=4)
+
+    def process_message(self, message_json, receiving_node):
+        message_data = json.loads(message_json)
+        message_type = message_data["type"]
+        headers = message_data["headers"]
+
+        if message_type == "info":
+            # Process information message, decide which neighbors to forward it to
+            # based on the shortest path
+            # Example: Decide based on headers["to"]
+            print("Received info message:", headers)
+        elif message_type == "message":
+            # Process user message, check if it has reached the destination
+            if headers["to"] == receiving_node.name:
+                print("Received user message:", message_data["payload"])
+            else:
+                print("Forwarding user message to:", headers["to"])
+                # Forward the message to the next node in the shortest path
+                # Example: headers["to"] corresponds to the next node
+    
 nodeA = Node("A")
 nodeB = Node("B")
 nodeC = Node("C")
@@ -99,3 +138,15 @@ for node in graph.nodes:
     print(f"Distance from source: {node.distance}")
     print(f"Shortest path: {[n.name for n in node.shortest_path]}")
     print("-------------")
+    
+# Enviar un mensaje
+source_node = nodeA  # Nodo emisor
+destination_node = nodeE  # Nodo receptor
+message = "Hola, ¿cómo estás?"
+message_json = dijkstra.create_message(source_node, destination_node, message)
+
+print("Sending message:")
+print(message_json)
+
+# Procesar el mensaje en el nodo receptor
+dijkstra.process_message(message_json, destination_node)

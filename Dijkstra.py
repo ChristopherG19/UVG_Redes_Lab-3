@@ -82,6 +82,29 @@ class Dijkstra():
         
         return json.dumps(message_data, indent=4)
 
+    def create_info_messages(self, source_node, message):
+        info_messages = []
+
+        for adjacent_node, edge_weight in source_node.adjacent_nodes.items():
+            hop_count = len(adjacent_node.shortest_path) - 1
+            headers = {
+                "from": source_node.name,
+                "to": adjacent_node.name,
+                "hop_count": hop_count
+            }
+            payload = message
+
+            message_data = {
+                "type": "info",
+                "headers": headers,
+                "payload": payload
+            }
+
+            info_messages.append(json.dumps(message_data, indent=4))
+
+        return info_messages
+    
+
     def process_message(self, message_json, receiving_node):
         message_data = json.loads(message_json)
         message_type = message_data["type"]
@@ -101,9 +124,9 @@ class Dijkstra():
                 # Forward the message to the next node in the shortest path
                 # Example: headers["to"] corresponds to the next node
     
-nodeA = Node("A")
-nodeB = Node("B")
-nodeC = Node("C")
+nodeA = Node("X")
+nodeB = Node("Y")
+nodeC = Node("Z")
 nodeD = Node("D")
 nodeE = Node("E")
 nodeF = Node("F")
@@ -140,13 +163,11 @@ for node in graph.nodes:
     print("-------------")
     
 # Enviar un mensaje
-source_node = nodeA  # Nodo emisor
+source_node = nodeF  # Nodo emisor
 destination_node = nodeE  # Nodo receptor
 message = "Hola, ¿cómo estás?"
-message_json = dijkstra.create_message(source_node, destination_node, message)
-
-print("Sending message:")
-print(message_json)
-
-# Procesar el mensaje en el nodo receptor
-dijkstra.process_message(message_json, destination_node)
+# Enviar mensaje info a los vecinos del nodo emisor
+info_messages = dijkstra.create_info_messages(source_node, message)
+for info_message in info_messages:
+    print("Sending info message:")
+    print(info_message)

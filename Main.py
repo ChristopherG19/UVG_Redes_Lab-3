@@ -14,6 +14,7 @@ Integrantes:
 """
 
 # Imports 
+from Flooding import Flooding
 from utils.view import *
 
 # Programa principal
@@ -33,7 +34,8 @@ def main():
 
         elif (op_MM == 2):
             # Flooding
-            print("Flooding")
+            flooding = Flooding()
+            flooding.start()
 
         elif (op_MM == 3):
             # Distance Vector Routing

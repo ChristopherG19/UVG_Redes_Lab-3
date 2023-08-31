@@ -13,6 +13,7 @@ Integrantes:
 - Ma. Isabel Solano (20504)
 """
 
+import json
 from extras import Node
 
 class Flooding():
@@ -26,9 +27,26 @@ class Flooding():
         for node in self.nodes:
             node.visited = False  # Reiniciar el estado visitado de todos los nodos
         source_node.visited = True  # Marcar el nodo emisor como visitado
-        message = {'source': source_node, 'data': message_data, 'destiny': destiny}
+        message = self.create_message(source_node, message_data, destiny)
         for neighbor in source_node.neighbors:
             neighbor.flood(message)
+            
+    def create_message(self, source_node, message_data, destiny):
+        headers = {
+            "from": source_node.name,
+            "to": destiny.name,
+            "hop_count": len(self.nodes)
+        }
+        
+        payload = message_data
+
+        message = {
+            "type": "message",
+            "headers": headers,
+            "payload": payload
+        }
+        
+        return json.dumps(message, indent=4)
             
     def start(self):
         print()
@@ -72,7 +90,17 @@ class Flooding():
                     dest = input("Nombre de nodo destino: ")
                     msg = input("Ingresa el mensaje que deseas enviar: ")
                     
-                    self.initiate_flood(sour, msg, dest)
+                    print()
+                    
+                    node_dest = None
+                    for node in self.nodes:
+                        if node.name == dest:
+                            node_dest = node
+                    
+                    if(node_dest):
+                        self.initiate_flood(sour, msg, node_dest)
+                    else:
+                        print("Nodo no alcanzable")
                     
                 case 2:
                     0

@@ -13,6 +13,9 @@ Integrantes:
 - Ma. Isabel Solano (20504)
 """
 
+import json
+
+
 class Node:
     def __init__(self, name):
         self.name = name.upper()
@@ -23,15 +26,26 @@ class Node:
         self.neighbors.append(neighbor)
 
     def flood(self, message):
-        if not self.visited:
+        message_data = json.loads(message)
+        message_type = message_data["type"]
+        headers = message_data["headers"]
+        
+        if(not self.visited):
             self.visited = True
-            if(self.name == message['destiny']):
-                print(f"Nodo {self.name} recibió: {message['data']}")
-            else:
-                print(f"Nodo {self.name} reenvió paquete a: {message['destiny']}")
-                for neighbor in self.neighbors:
-                    if neighbor != message['source']:
-                        neighbor.flood(message)
+            if(message_type == "info"):
+                print("Mensaje de información recibida:", headers)
+                print()
+            elif(message_type == "message"):
+                if(self.name == headers['to']):
+                    print(f"({self.name}) Mensaje entrante de: {headers['from']}")
+                    print(message_data["payload"], "\n")
+                else:
+                    print(f"Reenvia este paquete a: {headers['to']}")
+                    print(message)
+                    print()
+                    # for neighbor in self.neighbors:
+                    #     if neighbor != headers['from']:
+                    #         neighbor.flood(message)
         
     def __repr__(self):
         return f"Nodo: {self.name}{(' | Vecinos: '+str(self.neighbors)) if len(self.neighbors)>0 else ''}"

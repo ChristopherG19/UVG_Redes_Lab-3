@@ -25,27 +25,14 @@ class Node:
     def add_neighbor(self, neighbor):
         self.neighbors.append(neighbor)
 
-    def flood(self, message):
-        message_data = json.loads(message)
-        message_type = message_data["type"]
-        headers = message_data["headers"]
-        
-        if(not self.visited):
-            self.visited = True
-            if(message_type == "info"):
-                print("Mensaje de información recibida:", headers)
-                print()
-            elif(message_type == "message"):
-                if(self.name == headers['to']):
-                    print(f"({self.name}) Mensaje entrante de: {headers['from']}")
-                    print(message_data["payload"], "\n")
-                else:
-                    print(f"Reenvia este paquete a: {headers['to']}")
-                    print(message)
-                    print()
-                    # for neighbor in self.neighbors:
-                    #     if neighbor != headers['from']:
-                    #         neighbor.flood(message)
+    def get_neighbors(self):
+        return self.neighbors
+    
+    def get_visited(self):
+        return self.visited
+    
+    def set_visited(self, vis):
+        self.visited = vis
         
     def __repr__(self):
         return f"Nodo: {self.name}{(' | Vecinos: '+str(self.neighbors)) if len(self.neighbors)>0 else ''}"

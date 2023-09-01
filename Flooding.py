@@ -22,14 +22,35 @@ class Flooding():
 
     def add_node(self, node):
         self.nodes.append(node)
+        
+    def flood(self, source_node, message):
+        message_data = json.loads(message)
+        message_type = message_data["type"]
+        headers = message_data["headers"]
+        
+        for neighbor in source_node.get_neighbors():
+            if neighbor != headers['from']:
+                print(f"Reenvia este paquete a: {neighbor.name}")
+                print(message)
+                print()
+                self.flood(neighbor, message)
+    
+            else:
+                if(not source_node.get_visited()):
+                    source_node.set_visited(True)
+                    if(message_type == "info"):
+                        print("Mensaje de información recibida:", headers)
+                        print()
+                    elif(message_type == "message"):
+                        if(source_node.name == headers['to']):
+                            print(f"({source_node.name}) Mensaje entrante de: {headers['from']}")
+                            print(message_data["payload"], "\n")
 
     def initiate_flood(self, source_node, message_data, destiny):
         for node in self.nodes:
             node.visited = False  # Reiniciar el estado visitado de todos los nodos
-        source_node.visited = True  # Marcar el nodo emisor como visitado
         message = self.create_message(source_node, message_data, destiny)
-        for neighbor in source_node.neighbors:
-            neighbor.flood(message)
+        self.flood(source_node, message)
             
     def create_message(self, source_node, message_data, destiny):
         headers = {

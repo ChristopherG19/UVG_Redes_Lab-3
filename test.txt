@@ -1,0 +1,9 @@
+{
+    "type": "message",
+    "headers": {
+        "from": "Z",
+        "to": "E",
+        "hop_count": 0
+    },
+    "payload": "aaa"
+}

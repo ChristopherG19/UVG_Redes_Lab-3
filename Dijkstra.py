@@ -124,50 +124,67 @@ class Dijkstra():
                 # Forward the message to the next node in the shortest path
                 # Example: headers["to"] corresponds to the next node
     
-nodeA = Node("X")
-nodeB = Node("Y")
-nodeC = Node("Z")
-nodeD = Node("D")
-nodeE = Node("E")
-nodeF = Node("F")
+    def main(self):
+        graph = Graph()
 
-nodeA.add_destination(nodeB, 10)
-nodeA.add_destination(nodeC, 15)
+        nodeA = Node("X")
+        nodeB = Node("Y")
+        nodeC = Node("Z")
+        nodeD = Node("D")
+        nodeE = Node("E")
+        nodeF = Node("F")
 
-nodeB.add_destination(nodeD, 12)
-nodeB.add_destination(nodeF, 15)
+        nodeA.add_destination(nodeB, 10)
+        nodeA.add_destination(nodeC, 15)
 
-nodeC.add_destination(nodeE, 10)
+        nodeB.add_destination(nodeD, 12)
+        nodeB.add_destination(nodeF, 15)
 
-nodeD.add_destination(nodeE, 2)
-nodeD.add_destination(nodeF, 1)
+        nodeC.add_destination(nodeE, 10)
 
-nodeF.add_destination(nodeE, 5)
+        nodeD.add_destination(nodeE, 2)
+        nodeD.add_destination(nodeF, 1)
 
-graph = Graph()
+        nodeF.add_destination(nodeE, 5)
 
-graph.add_node(nodeA)
-graph.add_node(nodeB)
-graph.add_node(nodeC)
-graph.add_node(nodeD)
-graph.add_node(nodeE)
-graph.add_node(nodeF)
+        graph.add_node(nodeA)
+        graph.add_node(nodeB)
+        graph.add_node(nodeC)
+        graph.add_node(nodeD)
+        graph.add_node(nodeE)
+        graph.add_node(nodeF)
 
-dijkstra = Dijkstra()
-graph = dijkstra.calculate_shortest_path_from_source(graph, nodeA)
+        graph = self.calculate_shortest_path_from_source(graph, nodeA)
 
-for node in graph.nodes:
-    print(f"Node: {node.name}")
-    print(f"Distance from source: {node.distance}")
-    print(f"Shortest path: {[n.name for n in node.shortest_path]}")
-    print("-------------")
+        while True:
+            print("1. Send Message")
+            print("2. Listen for Messages")
+            print("3. Exit")
+            
+            choice = input("Select an option: ")
+            
+            if choice == "1":
+                source_node = nodeA
+                destination_node = nodeE
+                message = input("Enter your message: ")
+                info_messages = self.create_info_messages(source_node, message)
+                for info_message in info_messages:
+                    print("Sending info message:")
+                    print(info_message)
+            elif choice == "2":
+                print("Enter the message JSON (press Enter twice to finish):")
+                lines = []
+                while True:
+                    line = input()
+                    if line == "":
+                        break
+                    lines.append(line)
+                message_json = "\n".join(lines)
+                receiving_node = nodeE  # Replace with actual receiving node
+                self.process_message(message_json, receiving_node)
+            elif choice == "3":
+                print("Exiting...")
+                break
+            else:
+                print("Invalid choice. Please select a valid option.")
     
-# Enviar un mensaje
-source_node = nodeF  # Nodo emisor
-destination_node = nodeE  # Nodo receptor
-message = "Hola, ¿cómo estás?"
-# Enviar mensaje info a los vecinos del nodo emisor
-info_messages = dijkstra.create_info_messages(source_node, message)
-for info_message in info_messages:
-    print("Sending info message:")
-    print(info_message)

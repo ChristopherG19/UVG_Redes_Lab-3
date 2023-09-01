@@ -16,6 +16,7 @@ Integrantes:
 # Imports 
 from Flooding import Flooding
 from utils.view import *
+from Dijkstra import Dijkstra
 
 # Programa principal
 def main():
@@ -30,7 +31,8 @@ def main():
 
         if (op_MM == 1):
             # Dijkstra
-            print("Dijkstra")
+            dijkstra = Dijkstra()
+            dijkstra.main()
 
         elif (op_MM == 2):
             # Flooding

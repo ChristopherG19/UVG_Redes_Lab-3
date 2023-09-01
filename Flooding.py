@@ -68,6 +68,29 @@ class Flooding():
         }
         
         return json.dumps(message, indent=4)
+    
+    def process_message(self, message, receiving_node):
+        message_data = json.loads(message)
+        message_type = message_data["type"]
+        headers = message_data["headers"]
+        info_received = False
+        
+        if(receiving_node.name == headers['to']):
+            if(message_type == "info"):
+                print("Mensaje de información recibida:", headers)
+                print()
+                info_received = True
+            elif(message_type == "message"):
+                print(f"({receiving_node.name}) Mensaje entrante de: {headers['from']}")
+                print(message_data["payload"], "\n")
+
+        for neighbor in receiving_node.get_neighbors():
+            if (not info_received):
+                if receiving_node.name != headers['to']:
+                    print(f"Reenvia este paquete a: {neighbor.name}")
+                    print(message)
+                    print()
+                    self.flood(neighbor, message)
             
     def start(self):
         print()
@@ -113,18 +136,20 @@ class Flooding():
                     
                     print()
                     
-                    node_dest = None
-                    for node in self.nodes:
-                        if node.name == dest:
-                            node_dest = node
-                    
-                    if(node_dest):
-                        self.initiate_flood(sour, msg, node_dest)
-                    else:
-                        print("Nodo no alcanzable")
+                    node_dest = Node(dest)
+                    self.initiate_flood(sour, msg, node_dest)
                     
                 case 2:
-                    0
+                    print("Ingresa el mensaje recibido (Doble Enter para confirmar)")
+                    lines = []
+                    while True:
+                        line = input()
+                        if line == "":
+                            break
+                        lines.append(line)
+                    message_json = "\n".join(lines)   
+                    self.process_message(message_json, actual_node)         
+                    
                 case 3:
                     print("Entendido, saliendo...")
                     ver2 = True

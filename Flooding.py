@@ -28,35 +28,34 @@ class Flooding():
         message_type = message_data["type"]
         headers = message_data["headers"]
         
-        for neighbor in source_node.get_neighbors():
-            if neighbor != headers['from']:
-                print(f"Reenvia este paquete a: {neighbor.name}")
-                print(message)
-                print()
-                self.flood(neighbor, message)
-    
-            else:
-                if(not source_node.get_visited()):
-                    source_node.set_visited(True)
-                    if(message_type == "info"):
-                        print("Mensaje de información recibida:", headers)
+        if(source_node.name not in headers["receivers"]):
+            headers["receivers"].append(source_node.name)
+        
+            for neighbor in source_node.get_neighbors():   
+                if(neighbor.name not in headers["receivers"]):
+                    if(neighbor.name != headers["to"]):
+                        headers["receivers"].append(neighbor.name)
+                    if headers['hop_count'] > 0:
+                        print(f"Reenvía este paquete a: {neighbor.name}")
+                        headers['hop_count'] -= 1
+                        message = json.dumps(message_data, indent=4)
+                        print(message)
                         print()
-                    elif(message_type == "message"):
-                        if(source_node.name == headers['to']):
-                            print(f"({source_node.name}) Mensaje entrante de: {headers['from']}")
-                            print(message_data["payload"], "\n")
+                        self.flood(neighbor, message)
+                    else:
+                        print(f"El hop count ha expirado para el mensaje a {headers['to']} en {neighbor.name}")
 
-    def initiate_flood(self, source_node, message_data, destiny):
-        for node in self.nodes:
-            node.visited = False  # Reiniciar el estado visitado de todos los nodos
-        message = self.create_message(source_node, message_data, destiny)
+
+    def initiate_flood(self, source_node, message_data, destiny, hc):
+        message = self.create_message(source_node, message_data, destiny, hc)
         self.flood(source_node, message)
             
-    def create_message(self, source_node, message_data, destiny):
+    def create_message(self, source_node, message_data, destiny, hc):
         headers = {
             "from": source_node.name,
             "to": destiny.name,
-            "hop_count": len(self.nodes)
+            "hop_count": hc,
+            "receivers": []
         }
         
         payload = message_data
@@ -73,24 +72,28 @@ class Flooding():
         message_data = json.loads(message)
         message_type = message_data["type"]
         headers = message_data["headers"]
-        info_received = False
-        
+
         if(receiving_node.name == headers['to']):
             if(message_type == "info"):
                 print("Mensaje de información recibida:", headers)
                 print()
-                info_received = True
             elif(message_type == "message"):
                 print(f"({receiving_node.name}) Mensaje entrante de: {headers['from']}")
                 print(message_data["payload"], "\n")
 
-        for neighbor in receiving_node.get_neighbors():
-            if (not info_received):
-                if receiving_node.name != headers['to']:
-                    print(f"Reenvia este paquete a: {neighbor.name}")
+        for neighbor in receiving_node.get_neighbors():  
+            if(neighbor.name not in headers["receivers"]):
+                if(neighbor.name != headers["to"]):
+                    headers["receivers"].append(neighbor.name)
+                if headers['hop_count'] > 0:
+                    print(f"Reenvía este paquete a: {neighbor.name}")
+                    headers['hop_count'] -= 1
+                    message = json.dumps(message_data, indent=4)
                     print(message)
                     print()
-                    self.flood(neighbor, message)
+                    self.flood(neighbor, json.dumps(message_data, indent=4))
+                else:
+                    print(f"El hop count ha expirado para el mensaje a {headers['to']} en {neighbor.name}")
             
     def start(self):
         print()
@@ -119,7 +122,8 @@ class Flooding():
                 
         print("\nDatos ingresados\n")
         for el in self.nodes:
-            print(el)
+            if(len(el.get_neighbors())>0):
+                print(el)
         
         ver2 = False
         while(not ver2):
@@ -133,11 +137,12 @@ class Flooding():
                     sour = actual_node
                     dest = input("Nombre de nodo destino: ")
                     msg = input("Ingresa el mensaje que deseas enviar: ")
+                    hc = int(input("Ingresa el hop_count: "))
                     
                     print()
                     
                     node_dest = Node(dest)
-                    self.initiate_flood(sour, msg, node_dest)
+                    self.initiate_flood(sour, msg, node_dest, hc)
                     
                 case 2:
                     print("Ingresa el mensaje recibido (Doble Enter para confirmar)")

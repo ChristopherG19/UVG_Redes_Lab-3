@@ -20,20 +20,13 @@ class Node:
     def __init__(self, name):
         self.name = name.upper()
         self.neighbors = []
-        self.visited = False
 
     def add_neighbor(self, neighbor):
         self.neighbors.append(neighbor)
 
     def get_neighbors(self):
         return self.neighbors
-    
-    def get_visited(self):
-        return self.visited
-    
-    def set_visited(self, vis):
-        self.visited = vis
-        
+
     def __repr__(self):
         return f"Nodo: {self.name}{(' | Vecinos: '+str(self.neighbors)) if len(self.neighbors)>0 else ''}"
         

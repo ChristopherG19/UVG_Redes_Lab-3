@@ -23,7 +23,7 @@ def DVR_menu():
     while(True):
 
         print()
-        print("1) Enviar mensaje")
+        print("1) Enviar mensaje a un nodo")
         print("2) Recibir mensaje")
         print("3) Salir")
 

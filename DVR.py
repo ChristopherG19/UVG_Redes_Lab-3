@@ -15,6 +15,7 @@ Integrantes:
 
 from utils.view import *
 from utils.RT import *
+import json
 
 class DistanceVectorRouting():
     def __init__(self):
@@ -40,10 +41,36 @@ class DistanceVectorRouting():
             opp = DVR_menu()
 
             if opp == 1:
+                # Actualizar rutas
                 0
 
             elif opp == 2:
-                0
+                # diferenciar tipo de mensaje
+                file_path = 'input.JSON'
+                with open(file_path, 'r') as file:
+                    try:
+                        
+                        input_ = input("Presione enter cuando haya actualizado input.txt ")
+                        jsonReceived = json.load(file)
+                        mtype = jsonReceived["type"]
+
+                        if mtype == "info":
+                            0
+                        
+                        elif mtype == "echo":
+                            0
+
+                        elif mtype == "message":
+                            0
+
+                        else:
+                            print("[[Error, no existe el tipo]]")
+
+                    except FileNotFoundError:
+                        print(f"File not found: {file_path}")
+                    except json.JSONDecodeError as e:
+                        print("Error parsing JSON:", e)
+
 
             elif opp == 3:
                 # Salir 
@@ -77,3 +104,6 @@ class DistanceVectorRouting():
 
             except ValueError:
                 print("\n[[Error, input inválido]]\n")
+
+    def receiveRT(self, rt: RoutingTable):
+        0

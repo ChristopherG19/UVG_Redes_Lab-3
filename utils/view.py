@@ -17,3 +17,21 @@ def mainMenu():
 
         else:
             return int(op)
+        
+
+def DVR_menu():
+
+    while(True):
+
+        print()
+        print("1) Enviar mensaje")
+        print("2) Recibir mensaje")
+        print("3) Salir")
+
+        op = input("No. de la opción: ")
+
+        if op == '1' or op == '2' or op == '3':
+            return int(op)
+        
+        else:
+            print("\n[[Error, input inválido]]\n")

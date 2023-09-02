@@ -17,7 +17,6 @@ def mainMenu():
 
         else:
             return int(op)
-        
 
 def DVR_menu():
 

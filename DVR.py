@@ -54,16 +54,16 @@ class DistanceVectorRouting():
                 file_path = 'input.JSON'
                 with open(file_path, 'r') as file:
                     try:
-                        
                         input_ = input("Presione enter cuando haya actualizado input.txt ")
                         jsonReceived = json.load(file)
                         mtype = jsonReceived["type"]
 
                         if mtype == "info":
-                            otroRT = jsonReceived["payload"]
-                            from_ = jsonReceived["headers"]["from"]
-                            self.receiveRT(otroRT, from_)
-                        
+                            if jsonReceived["headers"]["to"] == self.actual_node:
+                                otroRT = jsonReceived["payload"]
+                                from_ = jsonReceived["headers"]["from"]
+                                self.receiveRT(otroRT, from_)
+
                         elif mtype == "echo":
                             0
 

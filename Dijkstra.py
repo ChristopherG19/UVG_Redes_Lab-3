@@ -127,32 +127,23 @@ class Dijkstra():
     def main(self):
         graph = Graph()
 
-        nodeA = Node("X")
-        nodeB = Node("Y")
-        nodeC = Node("Z")
+        nodeA = Node("A")
+        nodeB = Node("B")
+        nodeC = Node("C")
         nodeD = Node("D")
-        nodeE = Node("E")
-        nodeF = Node("F")
+ 
 
         nodeA.add_destination(nodeB, 10)
         nodeA.add_destination(nodeC, 15)
 
         nodeB.add_destination(nodeD, 12)
-        nodeB.add_destination(nodeF, 15)
+        nodeC.add_destination(nodeD, 10)
 
-        nodeC.add_destination(nodeE, 10)
-
-        nodeD.add_destination(nodeE, 2)
-        nodeD.add_destination(nodeF, 1)
-
-        nodeF.add_destination(nodeE, 5)
 
         graph.add_node(nodeA)
         graph.add_node(nodeB)
         graph.add_node(nodeC)
         graph.add_node(nodeD)
-        graph.add_node(nodeE)
-        graph.add_node(nodeF)
 
         graph = self.calculate_shortest_path_from_source(graph, nodeA)
 
@@ -165,7 +156,7 @@ class Dijkstra():
             
             if choice == "1":
                 source_node = nodeA
-                destination_node = nodeE
+                destination_node = nodeD
                 message = input("Enter your message: ")
                 info_messages = self.create_info_messages(source_node, message)
                 for info_message in info_messages:
@@ -180,7 +171,7 @@ class Dijkstra():
                         break
                     lines.append(line)
                 message_json = "\n".join(lines)
-                receiving_node = nodeE  # Replace with actual receiving node
+                receiving_node = nodeD  
                 self.process_message(message_json, receiving_node)
             elif choice == "3":
                 print("Exiting...")

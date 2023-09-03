@@ -60,7 +60,9 @@ class DistanceVectorRouting():
                         mtype = jsonReceived["type"]
 
                         if mtype == "info":
-                            0
+                            otroRT = jsonReceived["payload"]
+                            from_ = jsonReceived["headers"]["from"]
+                            self.receiveRT(otroRT, from_)
                         
                         elif mtype == "echo":
                             0
@@ -128,8 +130,23 @@ class DistanceVectorRouting():
             except ValueError:
                 print("\n[[Error, input inválido]]\n")
 
-    def receiveRT(self, rt: RoutingTable):
-        0
+    def receiveRT(self, rt, from_):
+        for i in range(len(rt)):
+            if (self.RT.contains(rt[i][0])):
+                # update si es menor
+                wAcc = self.RT.get_info(rt[i][0])[0]
+                weight = self.RT.get_info(from_)[0] + rt[i][1]
+                # print(f"{weight} < {wAcc}? {self.actual_node}, {rt[i][0]}, {from_} ")
+
+                if weight < wAcc:
+                    # Actualizar si es menor
+                    self.RT.update_info(rt[i][0], weight, from_)
+                    # print("actualiza", rt[i][0], weight, from_)
+
+            else:
+                # agregar
+                weight = self.RT.get_info(from_)[0] + rt[i][1]
+                self.RT.addNeighbor(rt[i][0], weight, from_)
 
     def writeJSON(self, type_):
         if type_ == "info":

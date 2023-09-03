@@ -8,9 +8,6 @@ class RoutingTable():
         temp = [name, weight, hop]
         self.TABLE.append(temp)
 
-    def updateNeighbor(self, name, weight, hop):
-        0
-
     def contains(self, name):
         for i in self.TABLE:
             if i[0] == name:
@@ -24,15 +21,10 @@ class RoutingTable():
         return None 
     
     def update_info(self, name, weight, hop):
-        for i in range(len(self.TABLE)):
-            if i == 0:
-                # Es el primer nodo y sí mismo
-                print("No se puede editar el propio")
-                return
-            
+        for i in range(len(self.TABLE)):            
             if self.TABLE[i][0] == name:
-                self.TABLE[i][1] = weight
-                self.TABLE[i][2] = hop
+                temp = [name, weight, hop]
+                self.TABLE[i] = temp
     
     def __repr__(self) -> str:
         t = PrettyTable()

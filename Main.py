@@ -17,6 +17,7 @@ Integrantes:
 from Flooding import Flooding
 from utils.view import *
 from Dijkstra import Dijkstra
+from DVR import *
 
 # Programa principal
 def main():
@@ -42,6 +43,8 @@ def main():
         elif (op_MM == 3):
             # Distance Vector Routing
             print("Distance Vector Routing")
+            DVR = DistanceVectorRouting()
+            DVR.start()
 
         elif (op_MM == 4):
             # Salir del programa

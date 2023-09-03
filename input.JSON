@@ -1,34 +1,9 @@
 {
-    "type": "info",
+    "type": "message",
     "headers": {
-        "from": "C",
-        "to": "E"
+        "from": "A",
+        "to": "C",
+        "hop": "C"
     },
-    "payload": [
-        [
-            "C",
-            0,
-            "C"
-        ],
-        [
-            "B",
-            2,
-            "D"
-        ],
-        [
-            "D",
-            1,
-            "D"
-        ],
-        [
-            "E",
-            2,
-            "E"
-        ],
-        [
-            "A",
-            4,
-            "D"
-        ]
-    ]
+    "payload": "mensaje larguito sdjfksj"  
 }

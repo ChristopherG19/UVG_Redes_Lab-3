@@ -36,3 +36,23 @@ def DVR_menu():
         
         else:
             print("\n[[Error, input inválido]]\n")
+
+def message_Info(nodo_actual, nodes_list):
+
+    while(True):
+
+        print("\nIngrese los datos que se le piden a continuación")
+        node = input("Nodo: ")
+        payload = input("Mensaje: ")
+
+        if (payload is None) or (node is None):
+            return None
+
+        if (node not in nodes_list):
+            print(f"[[Error: {nodo_actual} no tiene relación con {node}]]")
+            print("Pruebe nuevamente")
+
+        else:
+            return (node, payload)
+
+        

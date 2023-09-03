@@ -43,7 +43,7 @@ class DistanceVectorRouting():
 
             if opp == 1:
                 # Actualizar rutas
-                0
+                self.writeJSON("message")
 
             elif opp == 2:
                 # generar data
@@ -71,7 +71,12 @@ class DistanceVectorRouting():
                             
                             if jsonReceived["headers"]["to"] != self.actual_node:
                                 # Re-send
-                                0
+                                destino = self.RT.get_info(jsonReceived["headers"]["to"])
+                                print(f"Enviar el mensaje a {destino[1]}")
+                                jsonReceived["headers"]["hop"] = destino[1]
+
+                                jsonReceived = json.dumps(jsonReceived, indent=4)
+                                print(jsonReceived)
 
                             else:
                                 # Read
@@ -172,4 +177,25 @@ class DistanceVectorRouting():
                 print(jsonRes)
 
         if type_ == "message":
-            0
+            
+            nodos = [n[0] for n in self.RT.TABLE]
+            res = message_Info(self.actual_node, nodos)
+
+            if res is not None:
+                print(f"Por favor copie y envíe el siguiente mensaje a {self.RT.get_info(res[0])[1]}")
+                
+                headers = {
+                    "from": self.actual_node,
+                    "to": res[0], 
+                    "hop": self.RT.get_info(res[0])[1]
+                }
+
+                message = {
+                    "type": "message",
+                    "headers": headers,
+                    "payload": res[1]
+                }
+
+                print("")
+                jsonEnv = json.dumps(message, indent=4)
+                print(jsonEnv)

@@ -20,13 +20,14 @@ import json
 class DistanceVectorRouting():
     def __init__(self):
         self.RT = RoutingTable()
+        self.Neighbors = []
         pass
 
     def start(self):
         print("")
-        actual_node = input("Nombre del nodo actual: ")
+        self.actual_node = input("Nombre del nodo actual: ")
 
-        self.RT.addNeighbor(actual_node, 0, actual_node)
+        self.RT.addNeighbor(self.actual_node, 0, self.actual_node)
 
         # ingresar vecinos
         self.DVR_input_initial_neighbors()
@@ -45,7 +46,11 @@ class DistanceVectorRouting():
                 0
 
             elif opp == 2:
-                # diferenciar tipo de mensaje
+                # generar data
+                self.writeJSON("info")
+
+            elif opp == 3:
+                # diferenciar tipo de mensaje recibido
                 file_path = 'input.JSON'
                 with open(file_path, 'r') as file:
                     try:
@@ -61,7 +66,20 @@ class DistanceVectorRouting():
                             0
 
                         elif mtype == "message":
-                            0
+                            
+                            if jsonReceived["headers"]["to"] != self.actual_node:
+                                # Re-send
+                                0
+
+                            else:
+                                # Read
+                                from_ = jsonReceived["headers"]["from"]
+                                mess= jsonReceived["payload"]
+                                print("\n================================")
+                                print(f"Mensaje recibido de {from_}")
+                                print(f"{mess}")
+                                print("================================")
+
 
                         else:
                             print("[[Error, no existe el tipo]]")
@@ -71,8 +89,10 @@ class DistanceVectorRouting():
                     except json.JSONDecodeError as e:
                         print("Error parsing JSON:", e)
 
+            elif opp == 4:
+                print(self.RT)
 
-            elif opp == 3:
+            elif opp == 5:
                 # Salir 
                 DVR_ = False
 
@@ -95,6 +115,9 @@ class DistanceVectorRouting():
                     # Add to table
                     self.RT.addNeighbor(v, w, v)
 
+                if v not in self.Neighbors:
+                    self.Neighbors.append(v)
+
                 print("\nDesea continuar agregando nodos?")
                 op = input("(y/n): ")
 
@@ -107,3 +130,29 @@ class DistanceVectorRouting():
 
     def receiveRT(self, rt: RoutingTable):
         0
+
+    def writeJSON(self, type_):
+        if type_ == "info":
+
+            print("Por favor copie y envíe los siguientes mensajes:")
+
+            payload = self.RT.TABLE
+
+            for n in self.Neighbors:
+                headers = {
+                    "from": self.actual_node,
+                    "to": n
+                }
+
+                message = {
+                    "type": "info",
+                    "headers": headers,
+                    "payload": payload
+                }
+
+                print("")
+                jsonRes = json.dumps(message, indent=4)
+                print(jsonRes)
+
+        if type_ == "message":
+            0

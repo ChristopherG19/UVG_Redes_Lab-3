@@ -24,12 +24,14 @@ def DVR_menu():
 
         print()
         print("1) Enviar mensaje a un nodo")
-        print("2) Recibir mensaje")
-        print("3) Salir")
+        print("2) Enviar info a vecinos")
+        print("3) Recibir info/mensaje")
+        print("4) Mostrar tabla de enrutamiento")
+        print("5) Salir")
 
         op = input("No. de la opción: ")
 
-        if op == '1' or op == '2' or op == '3':
+        if op in ["1", "2", "3", "4", "5"]:
             return int(op)
         
         else:
